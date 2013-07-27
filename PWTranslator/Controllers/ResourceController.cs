@@ -7,9 +7,6 @@ using System.Windows;
 using System.Xml;
 using PWTranslator.Helpers;
 using PWTranslator.Models;
-using Yandex.Direct;
-using Yandex.Direct.Authentication;
-using Yandex.Direct.Configuration;
 
 namespace PWTranslator.Controllers {
     public class ResourceController {

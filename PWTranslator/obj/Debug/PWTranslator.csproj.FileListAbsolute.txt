@@ -15,9 +15,3 @@ B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.Properties.Resources.res
 B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.csproj.GenerateResource.Cache
 B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.exe
 B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.pdb
-B:\DEV\PWTranslator\PWTranslator\bin\Debug\Newtonsoft.Json.dll
-B:\DEV\PWTranslator\PWTranslator\bin\Debug\Yandex.Direct.dll
-B:\DEV\PWTranslator\PWTranslator\bin\Debug\Newtonsoft.Json.pdb
-B:\DEV\PWTranslator\PWTranslator\bin\Debug\Newtonsoft.Json.xml
-B:\DEV\PWTranslator\PWTranslator\bin\Debug\Yandex.Direct.pdb
-B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.csprojResolveAssemblyReference.cache
