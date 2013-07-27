@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Yandex.Direct</id>
+    <version>0.1.0.20</version>
+    <title>Yandex.Direct API</title>
+    <authors>Yapi.NET Project Contributors</authors>
+    <owners>Yapi.NET Project Contributors</owners>
+    <projectUrl>http://yapi-net.github.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Yandex.Direct API library for .NET.</description>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>Yandex.Direct Яндекс.Директ Yandex Direct Яндекс Директ API</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="4.0.8" />
+    </dependencies>
+  </metadata>
+</package>

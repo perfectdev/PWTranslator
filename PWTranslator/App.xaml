@@ -1,0 +1,14 @@
+﻿<Application x:Class="PWTranslator.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:models="clr-namespace:PWTranslator.Models"
+             StartupUri="Windows\MainWindow.xaml">
+    <Application.Resources>
+        <DataTemplate x:Key="FileTemplate" DataType="models:FileEntry">
+            <StackPanel Orientation="Horizontal">
+                <Image Source="Resources/file.png" Width="16" VerticalAlignment="Center" Margin="0 1 5 0"/>
+                <TextBlock Text="{Binding Path=ShortName}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </DataTemplate>
+    </Application.Resources>
+</Application>
