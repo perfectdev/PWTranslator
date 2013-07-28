@@ -10,13 +10,31 @@ using PWTranslator.Models;
 
 namespace PWTranslator.Controllers {
     public class ResourceController {
+        private const string AutoCorrectFile = "autocorrect.txt";
         private readonly string _file;
         public XmlDocument XmlDoc { get; private set; }
         public List<Resource> Resources { get; set; }
+        public List<AutoCorrect> AutoCorrectList { get; set; }
 
         public ResourceController(string file) {
             _file = file;
             Resources = new List<Resource>();
+            AutoCorrectList = new List<AutoCorrect>();
+            LoadAutoCorrrect();
+        }
+
+        public void LoadAutoCorrrect() {
+            if (!File.Exists(AutoCorrectFile)) return;
+            try {
+                AutoCorrectList = new List<AutoCorrect>();
+                var text = File.ReadAllText(AutoCorrectFile);
+                var pairs = text.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+                foreach (var keyValue in pairs.Select(pair => pair.Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries))) {
+                    AutoCorrectList.Add(new AutoCorrect { Original = keyValue[0], Correct = keyValue[1] });
+                }
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public static ResourceController Create(string file) {
@@ -70,7 +88,8 @@ namespace PWTranslator.Controllers {
         public void Translate(string translateDirection) {
             try {
                 foreach (var resource in Resources) {
-                    resource.NewValue = YandexTranslator.Translate(translateDirection, resource.OriginalValue);
+                    var transText = AutoCorrectList.Aggregate(resource.OriginalValue, (current, autoCorrect) => current.Replace(autoCorrect.Original, autoCorrect.Correct));
+                    resource.NewValue = YandexTranslator.Translate(translateDirection, transText);
                 }
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Yandex API", MessageBoxButton.OK, MessageBoxImage.Error);

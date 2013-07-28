@@ -80,6 +80,12 @@
                         <TextBlock Text="File Close" VerticalAlignment="Center" Margin="5 0"/>
                     </StackPanel>
                 </Button>
+                <Button x:Name="BtnReloadAutoCorrect" HorizontalAlignment="Left" Margin="5 0" Grid.Row="0" Grid.Column="7" Width="160" IsEnabled="False" Click="BtnReloadAutoCloseOnClick">
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <controls:AutoGreyableImage Source="../Resources/reload.png" Width="24"/>
+                        <TextBlock Text="Reload autocorrect.txt" VerticalAlignment="Center" Margin="5 0"/>
+                    </StackPanel>
+                </Button>
             </Grid>
         </Grid>
         <Grid Grid.Row="1">

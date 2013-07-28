@@ -63,6 +63,7 @@ namespace PWTranslator.Windows {
             IcResources.ItemsSource = null;
             IcResources.ItemsSource = ResourceController.Resources;
             BtnFileClose.IsEnabled = true;
+            BtnReloadAutoCorrect.IsEnabled = true;
         }
 
         private void BtnSaveOnClick(object sender, RoutedEventArgs e) {
@@ -90,6 +91,11 @@ namespace PWTranslator.Windows {
             IcResources.ItemsSource = null;
             TeXml.Text = "";
             BtnFileClose.IsEnabled = false;
+        }
+
+        private void BtnReloadAutoCloseOnClick(object sender, RoutedEventArgs e) {
+            if (ResourceController == null) return;
+            ResourceController.LoadAutoCorrrect();
         }
     }
 }

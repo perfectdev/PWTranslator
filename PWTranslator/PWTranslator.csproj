@@ -71,6 +71,7 @@
     </Compile>
     <Compile Include="Controllers\ResourceController.cs" />
     <Compile Include="Helpers\YandexTranslator.cs" />
+    <Compile Include="Models\AutoCorrect.cs" />
     <Compile Include="Models\FileEntry.cs" />
     <Compile Include="Models\Resource.cs" />
     <Compile Include="Windows\Controls\AutoGreyableImage.cs" />
@@ -121,6 +122,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\reload.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
