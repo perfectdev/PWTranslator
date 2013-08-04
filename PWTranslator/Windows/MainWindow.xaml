@@ -6,7 +6,7 @@
         xmlns:models="clr-namespace:PWTranslator.Models"
         Icon="../logo.ico"
         AllowDrop="True"
-        Title="Perfect World Translator" Height="500" Width="800">
+        Title="Perfect World Translator" Height="500" Width="850">
     <Window.Background>
         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlColorKey}}"/>
     </Window.Background>
@@ -61,7 +61,10 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="Translate direction" Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="5 0 0 0"/>
                 <ComboBox x:Name="CbTranslateDirection" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="5 2"/>
-                <CheckBox x:Name="ChkAutoTranslate" Content="Auto translate" Grid.Column="4" Grid.Row="0" VerticalAlignment="Center" Margin="5 0" IsChecked="True"/>
+                <StackPanel Grid.Column="4" Grid.Row="0" VerticalAlignment="Center">
+                    <CheckBox x:Name="ChkAutoTranslate" Content="Auto translate" VerticalAlignment="Center" Margin="5 0" IsChecked="True"/>
+                    <CheckBox x:Name="ChkCleanXml" Content="Remove invalid characters from xml attributes" VerticalAlignment="Center" Margin="5 0" IsChecked="True"/>
+                </StackPanel>
                 <Button x:Name="BtnTranslate" HorizontalAlignment="Right" Margin="5 0" Width="100" IsEnabled="False" Grid.Row="0" Grid.Column="5" Click="BtnTranslateOnClick">
                     <StackPanel Orientation="Horizontal" Margin="5">
                         <controls:AutoGreyableImage Source="../Resources/translate.png" Width="24"/>

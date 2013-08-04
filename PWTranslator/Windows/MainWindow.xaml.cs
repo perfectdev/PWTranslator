@@ -19,7 +19,19 @@ namespace PWTranslator.Windows {
             Loaded += OnLoaded;
             Drop += OnDrop;
             LbFiles.SelectionChanged += LbFilesOnSelectionChanged;
+            ChkCleanXml.Checked += ChkCleanXmlOnChecked;
+            ChkCleanXml.Unchecked += ChkCleanXmlOnUnchecked;
             #endregion
+        }
+
+        private void ChkCleanXmlOnChecked(object sender, RoutedEventArgs e) {
+            if (ResourceController == null) return;
+            ResourceController.IsCleaningXML = true;
+        }
+
+        private void ChkCleanXmlOnUnchecked(object sender, RoutedEventArgs e) {
+            if (ResourceController == null) return;
+            ResourceController.IsCleaningXML = false;
         }
 
         private void LbFilesOnSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -54,7 +66,7 @@ namespace PWTranslator.Windows {
         }
 
         private void SelectFile(FileEntry file) {
-            ResourceController = ResourceController.Create(file.FullName);
+            ResourceController = ResourceController.Create(file.FullName, (bool) ChkCleanXml.IsChecked);
             TeXml.Text = File.ReadAllText(file.FullName);
             BtnSave.IsEnabled = true;
             BtnTranslate.IsEnabled = true;

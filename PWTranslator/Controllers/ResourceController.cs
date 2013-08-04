@@ -15,6 +15,7 @@ namespace PWTranslator.Controllers {
         public XmlDocument XmlDoc { get; private set; }
         public List<Resource> Resources { get; set; }
         public List<AutoCorrect> AutoCorrectList { get; set; }
+        public bool IsCleaningXML { get; set; } //  Удаляет китайскую шнягу из атрибутов
 
         public ResourceController(string file) {
             _file = file;
@@ -37,17 +38,19 @@ namespace PWTranslator.Controllers {
             }
         }
 
-        public static ResourceController Create(string file) {
-            var self = new ResourceController(file);
+        public static ResourceController Create(string file, bool isCleaningXML) {
+            var self = new ResourceController(file) { IsCleaningXML = isCleaningXML };
             self.ExtractResources();
             return self;
         }
 
         public void ExtractResources() {
             try {
+                if (IsCleaningXML) 
+                    CleanSource();
                 using (var fs = File.OpenRead(_file)) {
                     XmlDoc = new XmlDocument {PreserveWhitespace = true};
-                    using (var bReader = new BinaryReader(fs)) {
+                    using (var bReader = new BinaryReader(fs, Encoding.GetEncoding("utf-16LE"))) {
                         var b = bReader.ReadByte();
                         var garbageExists = b != 0x3C;
                         fs.Seek(garbageExists ? 2 : 0, SeekOrigin.Begin);
@@ -58,6 +61,20 @@ namespace PWTranslator.Controllers {
                 ReadNode(XmlDoc.DocumentElement);
             }
             catch (Exception ex) {
+                MessageBox.Show(ex.Message, "Parse Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void CleanSource() {
+            try {
+                var xmlText = File.ReadAllText(_file);
+                xmlText = xmlText.Replace(string.Format("</Data></Cell>{0} ", '"'), string.Format("{0} ", '"'));
+                var prefixBytes = new byte[] { 255, 254 };
+                var prefix = Encoding.GetEncoding("utf-16LE").GetString(prefixBytes);
+                if (!xmlText.Contains(prefix))
+                    xmlText = string.Format("{0}{1}", prefix, xmlText);
+                File.WriteAllText(_file, xmlText, Encoding.GetEncoding("utf-16LE"));
+            } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Parse Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -119,7 +136,8 @@ namespace PWTranslator.Controllers {
                 }
                 var prefixBytes = new byte[] {255, 254};
                 var prefix = Encoding.GetEncoding("utf-16LE").GetString(prefixBytes);
-                text = string.Format("{0}{1}", prefix, text);
+                if (!text.Contains(prefix))
+                    text = string.Format("{0}{1}", prefix, text);
                 File.WriteAllText(_file, text, Encoding.GetEncoding("utf-16LE"));
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Error);
