@@ -48,29 +48,29 @@ namespace PWTranslator.Controllers {
             try {
                 if (IsCleaningXML)
                     CleanSource();
-                using (var fs = File.OpenRead(_file)) {
-                    XmlDoc = new XmlDocument {PreserveWhitespace = true};
-                    /*using (var bReader = new BinaryReader(fs, Encoding.GetEncoding("utf-16LE"))) {
-                        var b = bReader.ReadByte();
-                        var garbageExists = b != 0x3C;
-                        fs.Seek(garbageExists ? 2 : 0, SeekOrigin.Begin);
-                        XmlDoc.Load(fs);
-                    }*/
-                    var buf = File.ReadAllText(_file);
-                    var prefixBytes = new byte[] { 255, 254 };
-                    var prefix = Encoding.GetEncoding("utf-16LE").GetString(prefixBytes);
-                    buf = buf.Replace(prefix, "")
-                            .Replace("</Data>", "{#data#}")
-                            .Replace("</Cell>", "{#cell#}")
-                            .Replace("<<", "{#lda#}")
-                            .Replace(">>", "{#rda#}")
-                            .Replace("|<", "{#lpa#}")
-                            .Replace(">|", "{#rpa#}")
-                            .Replace("<b>", "{#bo#}")
-                            .Replace("</b>", "{#bc#}");
-                    fs.Close();
-                    XmlDoc.LoadXml(buf);
-                }
+                //using (var fs = File.OpenRead(_file)) {
+                XmlDoc = new XmlDocument {PreserveWhitespace = true};
+                /*using (var bReader = new BinaryReader(fs, Encoding.GetEncoding("utf-16LE"))) {
+                    var b = bReader.ReadByte();
+                    var garbageExists = b != 0x3C;
+                    fs.Seek(garbageExists ? 2 : 0, SeekOrigin.Begin);
+                    XmlDoc.Load(fs);
+                }*/
+                var prefixBytes = new byte[] { 255, 254 };
+                var prefix = Encoding.GetEncoding("utf-16LE").GetString(prefixBytes);
+                var buf = File.ReadAllText(_file);
+                buf = buf.Replace(prefix, "")
+                        .Replace("</Data>", "{#data#}")
+                        .Replace("</Cell>", "{#cell#}")
+                        .Replace("<<", "{#lda#}")
+                        .Replace(">>", "{#rda#}")
+                        .Replace("|<", "{#lpa#}")
+                        .Replace(">|", "{#rpa#}")
+                        .Replace("<b>", "{#bo#}")
+                        .Replace("</b>", "{#bc#}");
+                //fs.Close();
+                XmlDoc.LoadXml(buf);
+                //}
                 ReadNode(XmlDoc.DocumentElement);
             }
             catch (Exception ex) {
