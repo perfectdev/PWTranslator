@@ -30,7 +30,7 @@ namespace PWTranslator.Controllers {
                 AutoCorrectList = new List<AutoCorrect>();
                 var text = File.ReadAllText(AutoCorrectFile);
                 var pairs = text.Split(new[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var keyValue in pairs.Select(pair => pair.Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries))) {
+                foreach (var keyValue in pairs.AsParallel().Select(pair => pair.Split(new[] { "\t" }, StringSplitOptions.RemoveEmptyEntries))) {
                     AutoCorrectList.Add(new AutoCorrect { Original = keyValue[0], Correct = keyValue[1] });
                 }
             } catch (Exception ex) {
@@ -46,22 +46,45 @@ namespace PWTranslator.Controllers {
 
         public void ExtractResources() {
             try {
-                if (IsCleaningXML) 
+                if (IsCleaningXML)
                     CleanSource();
                 using (var fs = File.OpenRead(_file)) {
                     XmlDoc = new XmlDocument {PreserveWhitespace = true};
-                    using (var bReader = new BinaryReader(fs, Encoding.GetEncoding("utf-16LE"))) {
+                    /*using (var bReader = new BinaryReader(fs, Encoding.GetEncoding("utf-16LE"))) {
                         var b = bReader.ReadByte();
                         var garbageExists = b != 0x3C;
                         fs.Seek(garbageExists ? 2 : 0, SeekOrigin.Begin);
                         XmlDoc.Load(fs);
-                    }
+                    }*/
+                    var buf = File.ReadAllText(_file);
+                    var prefixBytes = new byte[] { 255, 254 };
+                    var prefix = Encoding.GetEncoding("utf-16LE").GetString(prefixBytes);
+                    buf = buf.Replace(prefix, "")
+                            .Replace("</Data>", "{#data#}")
+                            .Replace("</Cell>", "{#cell#}")
+                            .Replace("<<", "{#lda#}")
+                            .Replace(">>", "{#rda#}")
+                            .Replace("|<", "{#lpa#}")
+                            .Replace(">|", "{#rpa#}")
+                            .Replace("<b>", "{#bo#}")
+                            .Replace("</b>", "{#bc#}");
                     fs.Close();
+                    XmlDoc.LoadXml(buf);
                 }
                 ReadNode(XmlDoc.DocumentElement);
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Parse Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            } finally {
+                var content = File.ReadAllText(_file)
+                    .Replace("{#data#}", "</Data>")
+                    .Replace("{#cell#}", "</Cell>")
+                    .Replace("{#lda#}", "<<")
+                    .Replace("{#rda#}", ">>")
+                    .Replace("{#lpa#}", "|<")
+                    .Replace("{#rpa#}", ">|")
+                    .Replace("{#bo#}", "<b>")
+                    .Replace("{#bc#}", "</b>");
             }
         }
 
@@ -81,7 +104,7 @@ namespace PWTranslator.Controllers {
 
         private void ReadNode(XmlNode node) {
             if (node != null && node.Attributes != null) {
-                foreach (var attribute in node.Attributes.Cast<XmlAttribute>().Where(t => t.Name.ToLower() == "string")) {
+                foreach (var attribute in node.Attributes.Cast<XmlAttribute>().AsParallel().Where(t => t.Name.ToLower() == "string")) {
                     Resources.Add(new Resource {XmlAttribute = attribute, Path = GetPath(attribute), OriginalValue = attribute.Value });
                 }
             }
@@ -104,7 +127,7 @@ namespace PWTranslator.Controllers {
 
         public void Translate(string translateDirection) {
             try {
-                foreach (var resource in Resources) {
+                foreach (var resource in Resources.AsParallel()) {
                     var transText = AutoCorrectList.Aggregate(resource.OriginalValue, (current, autoCorrect) => current.Replace(autoCorrect.Original, autoCorrect.Correct));
                     resource.NewValue = YandexTranslator.Translate(translateDirection, transText);
                 }
@@ -114,7 +137,7 @@ namespace PWTranslator.Controllers {
         }
 
         public string GetXml() {
-            foreach (var resource in Resources.Where(t=>!string.IsNullOrEmpty(t.NewValue))) {
+            foreach (var resource in Resources.AsParallel().Where(t=>!string.IsNullOrEmpty(t.NewValue))) {
                 resource.XmlAttribute.Value = resource.NewValue;
             }
             using (var ms = new MemoryStream()) {
@@ -138,6 +161,14 @@ namespace PWTranslator.Controllers {
                 var prefix = Encoding.GetEncoding("utf-16LE").GetString(prefixBytes);
                 if (!text.Contains(prefix))
                     text = string.Format("{0}{1}", prefix, text);
+                text = text
+                    .Replace("{#data#}", "</Data>")
+                    .Replace("{#cell#}", "</Cell>")
+                    .Replace("{#lda#}", "<<")
+                    .Replace("{#rda#}", ">>")
+                    .Replace("{#lpa#}", "|<")
+                    .Replace("{#rpa#}", ">|")
+                    .Replace("{#bc#}", "</b>");
                 File.WriteAllText(_file, text, Encoding.GetEncoding("utf-16LE"));
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Error);

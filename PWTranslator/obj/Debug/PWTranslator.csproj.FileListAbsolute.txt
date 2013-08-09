@@ -15,4 +15,3 @@ B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.Properties.Resources.res
 B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.csproj.GenerateResource.Cache
 B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.exe
 B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.pdb
-B:\DEV\PWTranslator\PWTranslator\obj\Debug\PWTranslator.csprojResolveAssemblyReference.cache
